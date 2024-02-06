@@ -147,6 +147,7 @@ define docker::image (
       logoutput   => true,
     }
   } elsif $ensure == 'latest' or $image_tag == 'latest' or $force {
+    /*
     notify { "Check if image ${image_arg} is in-sync":
       noop => false,
     }
@@ -159,14 +160,15 @@ define docker::image (
       provider    => $exec_provider,
       logoutput   => true,
     }
-    ~> exec { "echo 'Update of ${image_arg} complete'":
+    ~> */ exec { "echo 'Update of ${image_arg} complete'":
       environment => $exec_environment,
       path        => $exec_path,
       timeout     => $exec_timeout,
       require     => File[$update_docker_image_path],
       provider    => $exec_provider,
       logoutput   => true,
-      refreshonly => true,
+      #refreshonly => true,
+      onlyif      => $image_install,
     }
   } elsif $ensure == 'present' {
     exec { $image_install:
